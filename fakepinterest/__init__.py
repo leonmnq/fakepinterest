@@ -3,10 +3,18 @@ from flask import Flask     # Flask com 'F' maiúsculo, é o que vai criar o nos
 from flask_sqlalchemy import SQLAlchemy  # para criar nosso banco de dados
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+import os
 
 # o flask sugere que sempre, a primeira coisa é criar o 'app'
 app = Flask(__name__)  # app nada mais é, que o nosso site, nossa aplicação
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///comunidade.db"  # configuração para criação do banco
+
+# condição para ambiente online e ambiente local
+if os.getenv("DEBUG") == 0:  # significa que não está em um ambiente de debug OBS: necessário criar a variável de ambiente debug com valor 0 lá no sistema do render
+    link_banco = os.getenv("DATABASE_URL")  # o link será esse, significa que está no ambiente online
+else:
+    link_banco = "sqlite:///comunidade.db"  # utiliza o banco de dados local, offline
+
+app.config["SQLALCHEMY_DATABASE_URI"] = link_banco  # configuração para criação do banco
 app.config["SECRET_KEY"] = "204fd3b542111b5941ee62257eef7ec1" # nosso aplicativo vai usar a chave de segurança como referência pra garantir a segurança do app
 app.config["UPLOAD_FOLDER"] = "static/fotos_posts"  # define onde as fotos serão armazenadas
 
