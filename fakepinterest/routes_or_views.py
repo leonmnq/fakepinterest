@@ -13,6 +13,7 @@ from fakepinterest.forms import FormLogin, FormCriarConta, FormFoto  # importand
 import os
 from werkzeug.utils import secure_filename  # vai transformar o nome da foto em um nome seguro
 
+from flask import send_from_directory  # para salvar as fotos na pasta criada no render
 
 # colocar o site no ar
 @app.route("/", methods=["GET", "POST"])  # decorator # "/" rota principal do nosso site, homepage  # methods=["GET", "POST"] é necessário sempre que você tem um formulário com método "POST" dentro da página html que você quer carregar
@@ -48,6 +49,11 @@ def criar_conta():
     return render_template("criarconta.html", form=form_criarconta)
 
 
+# @app.route("/uploads/<path:filename>")
+# def custom_static(filename):  # função criada para personalizar a pasta static para permitir que as fotos sejam salvas dentro da pasta no render
+#     return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment=True)
+
+
 @app.route("/perfil/<id_usuario>", methods=["GET", "POST"])   # '<usuario>' assim, entre <>, sinaliza que 'usuario' é uma variável e não um texto
 @login_required  # exige um login para acesso
 def perfil(id_usuario):  # aqui também precisa passar a mesma variável 'usuario' como parâmetro da função
@@ -57,12 +63,17 @@ def perfil(id_usuario):  # aqui também precisa passar a mesma variável 'usuari
         if form_foto.validate_on_submit():
             arquivo = form_foto.foto.data
             nome_seguro = secure_filename(arquivo.filename)
-            # salvar o arquivo na pasta fotos_post
+
+            # Salvar o arquivo na pasta fotos_post (descomentar esse caminho)
             caminho = os.path.join(
                 os.path.abspath(os.path.dirname(__file__)),
                 app.config["UPLOAD_FOLDER"],
                 nome_seguro
             )  # "os.path.abspath(os.path.dirname(__file__))" retorna o caminho onde esse código está escrito
+
+            # Salvar na pasta criada dentro do render (descomentar esse caminho)
+            #caminho = os.path.join(app.config["UPLOAD_FOLDER"], nome_seguro)
+
             arquivo.save(caminho)
 
             # registrar o nome desse arquivo no bando de dados
