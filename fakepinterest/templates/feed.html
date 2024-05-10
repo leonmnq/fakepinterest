@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "navbar.html" %}
+
+  <body>
+    <div class="container">
+
+      <div class="conteudo">
+
+        {% for foto in fotos %}
+          <a href="{{ url_for('perfil', id_usuario=foto.id_usuario) }}" class="bloco-imagem">
+            <img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" />
+          </a>
+        {% endfor %}
+
+      </div>
+    </div>
+  </body>
+
+{% endblock %}
+<!-- 'href="{{ url_for('perfil', id_usuario=foto.id_usuario) }}"' essa linha dentro do 'for' significa que a foto que for clicada vai direcionar para o perfil do dono da foto-->
+
+<!-- 'src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}"' essa linha dentro do 'for' significa que todas as fotos dentro da pasta 'static' serão carregadas no feed -->
+
+
+
