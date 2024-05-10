@@ -21,8 +21,8 @@ def homepage():
     if form_login.validate_on_submit():  # se todos os campos estão preenchidos e o usuário clicou no botão Login
         usuario = Usuario.query.filter_by(email=form_login.email.data).first() # vai verificar na tabela Usuario do banco de dados se existe algum e-mail igual ao e-mail que foi preenchido no FormCriarConta e vai retornar uma lista de um item na variável 'usuario'
         if usuario:  # se for encontrado esse email no banco de dados
-            #if bcrypt.check_password_hash(usuario.senha.encode("utf-8"), form_login.senha.data):  # compara a senha criptografada do bando de dados com a senha que o usuário acabou de digitar
-            if usuario.senha == form_login.senha.data:
+            if bcrypt.check_password_hash(usuario.senha.encode('utf-8'), form_login.senha.data):  # compara a senha criptografada do bando de dados com a senha que o usuário acabou de digitar
+            #if usuario.senha == form_login.senha.data:
                 login_user(usuario)
                 return redirect(url_for("perfil", id_usuario=usuario.id)) # redireciona para tela de perfil do usuário
         # else:  # criei esse else para usuário que não possui conta e tenta fazer login
@@ -34,8 +34,8 @@ def homepage():
 def criar_conta():
     form_criarconta = FormCriarConta()
     if form_criarconta.validate_on_submit():  # se todos os campos estão preenchidos e o usuário clicou no botão Criar Conta
-        #senha = bcrypt.generate_password_hash(form_criarconta.senha.data).decode("utf-8")  # criptografa a senha
-        senha = form_criarconta.senha.data
+        senha = bcrypt.generate_password_hash(form_criarconta.senha.data).decode('utf-8')  # criptografa a senha
+        #senha = form_criarconta.senha.data
         usuario = Usuario(
             username=form_criarconta.username.data,
             email=form_criarconta.email.data,
